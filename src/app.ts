@@ -47,7 +47,7 @@ app.get('/', async(req, res) => {
     res.set('Content-Type', 'application/json');
     res.set("Set-Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
     res.set("Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
-    res.send(JSON.stringify(result));
+    res.send(JSON.stringify(result, null, 4));
   }
 });
 
