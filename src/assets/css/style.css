@@ -92,7 +92,7 @@ footer {
 }
 
 /* Spinner Overlay */
-.spanner {
+.spinner {
   position: absolute;
   top: 50%;
   left: 0;
@@ -175,14 +175,14 @@ footer {
   visibility: visible;
 }
 
-.spanner, .overlay {
+.spinner, .overlay {
 	opacity: 0;
 	-webkit-transition: all 0.3s;
 	-moz-transition: all 0.3s;
 	transition: all 0.3s;
 }
 
-.spanner.show, .overlay.show {
+.spinner.show, .overlay.show {
 	opacity: 1
 }
 

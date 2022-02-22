@@ -21,6 +21,7 @@ app.use(bodyParser.urlencoded({ extended: true }))
 app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', ['*']);
   res.append('Access-Control-Request-Method', ['*']);
+  res.append('Access-Control-Allow-Credentials', ['true']);
   res.append('Access-Control-Allow-Methods', 'OPTIONS, GET');
   res.append('Access-Control-Allow-Headers', 'Content-Type');
   next();
@@ -45,6 +46,8 @@ app.get('/', async(req, res) => {
       cache.set(strUsername, result);
     }
     res.set('Content-Type', 'application/json');
+    res.set("Set-Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
+    res.set("Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
     res.send(JSON.stringify(result));
   }
 });

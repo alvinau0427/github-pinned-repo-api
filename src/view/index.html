@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 
 <head>
-  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <meta name="language" content="English" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
@@ -12,6 +12,36 @@
   <meta property="og:description" content="Genetates API for GitHub pinned repos from personal portfolio" />
   <meta property="og:title" content="GitHub Pinned Repos API Generator" />
   <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://alvinau.dev/github-pinned-repo-api" />
+  <meta property="og:image" content="http://alvinau.dev/github-pinned-repo-api/assets/images/touch-icons/apple-touch-icon-1024x1024.png" />
+  <meta property="og:image:secure_url" content="https://alvinau.dev/github-pinned-repo-api/assets/images/touch-icons/apple-touch-icon-1024x1024.png" />
+  <meta property="og:image:type" content="image/png" />
+  <meta property="og:image:width" content="1024" />
+  <meta property="og:image:height" content="1024" />
+  <meta property="og:image:alt" content="Genetates API for GitHub pinned repos from personal portfolio" />
+  <meta property="og:site_name" content="alvinau.dev" />
+
+  <!-- Web App Tags: For add to home screen -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/touch-icons/apple-touch-icon-180x180.png" />
+  <link rel="apple-touch-icon" sizes="152x152" href="images/touch-icons/apple-touch-icon-152x152.png" />
+  <link rel="apple-touch-icon" sizes="144x144" href="images/touch-icons/apple-touch-icon-144x144.png" />
+  <link rel="apple-touch-icon" sizes="120x120" href="images/touch-icons/apple-touch-icon-120x120.png" />
+  <link rel="apple-touch-icon" sizes="114x114" href="images/touch-icons/apple-touch-icon-114x114.png" />
+  <link rel="apple-touch-icon" sizes="76x76" href="images/touch-icons/apple-touch-icon-76x76.png" />
+  <link rel="apple-touch-icon" sizes="72x72" href="images/touch-icons/apple-touch-icon-72x72.png" />
+  <link rel="apple-touch-icon" sizes="57x57" href="images/touch-icons/apple-touch-icon-57x57.png" />
+  <link rel="apple-touch-icon" href="images/touch-icons/apple-touch-icon-57x57.png" />
+  <!-- Web App Tags -->
+
+  <!-- Favicons -->
+  <link rel="shortcut icon" href="images/favicon.ico" type="image/x-icon" />
+  <!-- Favicons -->
+
+  <title>GitHub Pinned Repos API Generator</title>
+  <link rel="canonical" href="https://alvinau.dev/github-pinned-repo-api/" />
   
   <link rel="stylesheet" type="text/css" href="css/style.css" />
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -29,9 +59,10 @@
   
   <div class="cntr">
     <div class="cntr-innr">
-      <form id="input_form" action="/">
+      <form id="input_form" onsubmit="formOnSubmit()" action="/">
         <label class="search" for="input_search">
-          <input id="input_search" name="username" type="text" autocomplete="off" required />
+          <input id="input_search" name="username" type="text" autocomplete="off" 
+            onfocus="inputOnFocus(this)" onblur="inputOnBlur(this)" required />
         </label>
       </form>
       <p>Hover and enter your GitHub username → Pinned repos API.</p>
@@ -41,9 +72,9 @@
     <p>Copyright © 2022 Alvin Au, All rights reserved.</p>
   </footer>
 
-  <div class="overlay"></div>
-  <div class="spanner">
-    <div class="loader"></div>
+  <div id="overlay" class="overlay"></div>
+  <div id="spinner" class="spinner">
+    <div id="loader" class="loader"></div>
     <p>Loading API, please be patient.</p>
   </div>
 </body>
