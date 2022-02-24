@@ -1,4 +1,5 @@
 import express from 'express';
+import http from 'http';
 import bodyParser from 'body-parser';
 import path from 'path';
 import fetch from 'cross-fetch';
@@ -9,6 +10,8 @@ const app = express();
 const port = 3000;
 const options = { max: 500, maxSize: 500 };
 const cache = new LRU(options);
+
+startKeepAlive();
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Server is listening on port: ${process.env.PORT || port}`);
@@ -172,4 +175,34 @@ function getForks(user: cheerio.Root, item: cheerio.Element) {
   } catch (error) {
     return undefined;
   }
+}
+
+/* Heroku Server Keepalive */
+// setInterval(function() {
+//     http.get("https://github-pinned-repo-api.herokuapp.com");
+// }, 300000); // every 5 minutes (300000)
+
+function startKeepAlive() {
+  setInterval(function() {
+    var options = {
+      host: 'github-pinned-repo-api.herokuapp.com',
+      port: 80,
+      path: '/'
+    };
+    http.get(options, function(res) {
+      res.on('data', function(logging) {
+        try {
+          console.log("HEROKU RESPONSE: " + logging);
+        } catch(e: unknown) {
+          if (typeof e === "string") {
+            e.toUpperCase()
+          } else if (e instanceof Error) {
+            e.message 
+          }
+        }
+      });
+    }).on('error', function(err) {
+      console.log("Error: " + err.message);
+    });
+  }, 20 * 60 * 1000);
 }

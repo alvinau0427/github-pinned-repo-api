@@ -32,6 +32,7 @@
         "cheerio": "^1.0.0-rc.10",
         "cross-fetch": "^3.1.5",
         "express": "^4.17.2",
+        "http": "0.0.1-security",
         "lru-cache": "^7.3.1",
         "path": "^0.12.7",
         "request": "^2.88.2"
