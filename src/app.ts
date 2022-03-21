@@ -11,7 +11,7 @@ const port = 3000;
 const options = { max: 500, maxSize: 500 };
 const cache = new LRU(options);
 
-startKeepAlive();
+// startKeepAlive();
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Server is listening on port: ${process.env.PORT || port}`);

@@ -42,7 +42,7 @@ const app = (0, express_1.default)();
 const port = 3000;
 const options = { max: 500, maxSize: 500 };
 const cache = new lru_cache_1.default(options);
-startKeepAlive();
+// startKeepAlive();
 app.listen(process.env.PORT || port, () => {
     console.log(`Server is listening on port: ${process.env.PORT || port}`);
 });
