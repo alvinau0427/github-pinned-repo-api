@@ -8,7 +8,9 @@
 /* Baisc */
 html, body {
   height: 100%;
+  width: 100%;
   margin: 0;
+  overflow-x: hidden;
 }
 
 body {
@@ -85,7 +87,7 @@ footer {
   border: none;
   box-sizing: border-box;
   font-family: "Zpix";
-  font-size: 15px;
+  font-size: 16px;
   color: inherit;
   background: transparent;
   outline-width: 0px;
@@ -209,5 +211,19 @@ footer {
   }
   .github-corner .octo-arm {
     animation: octocat-wave 560ms ease-in-out
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  /* styles for screens up to 600px wide */
+  body {
+    font-size: 12px;
+  }
+}
+
+@media only screen and (min-width: 601px) {
+  /* styles for screens wider than 600px */
+  body {
+      font-size: 16px;
   }
 }
