@@ -4,9 +4,10 @@
     "description": "Get GitHub pinned repository contents without using personal access token",
     "main": "app.ts",
     "scripts": {
-        "start": "nodemon src/app.ts",
+        "start": "node src/app.js",
         "build": "tsc --project ./",
-        "dev": "npm install && npm run build",
+        "dev": "nodemon src/app.ts",
+        "deploy": "npm install && npm run build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
