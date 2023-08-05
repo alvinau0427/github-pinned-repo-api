@@ -177,22 +177,22 @@ function getForks(user: cheerio.Root, item: cheerio.Element) {
   }
 }
 
-/* Heroku Server Keepalive */
+/* Render.com Server Keepalive */
 // setInterval(function() {
-//     http.get("https://github-pinned-repo-api.herokuapp.com");
+//     http.get("https://github-pinned-repo-api.onrender.com");
 // }, 300000); // every 5 minutes (300000)
 
 function startKeepAlive() {
   setInterval(function() {
     var options = {
-      host: 'github-pinned-repo-api.herokuapp.com',
+      host: 'github-pinned-repo-api.onrender.com',
       port: 80,
       path: '/'
     };
     http.get(options, function(res) {
       res.on('data', function(logging) {
         try {
-          console.log("HEROKU RESPONSE: " + logging);
+          console.log("RENDER.COM RESPONSE: " + logging);
         } catch(e: unknown) {
           if (typeof e === "string") {
             e.toUpperCase()
