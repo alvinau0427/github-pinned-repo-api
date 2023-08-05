@@ -207,21 +207,21 @@ function getForks(user, item) {
         return undefined;
     }
 }
-/* Render.com Server Keepalive */
+/* Cyclic.sh Server Keepalive */
 // setInterval(function() {
-//     http.get("https://github-pinned-repo-api.onrender.com");
+//     http.get("https://github-pinned-repo-api.cyclic.app");
 // }, 300000); // every 5 minutes (300000)
 function startKeepAlive() {
     setInterval(function () {
         var options = {
-            host: 'github-pinned-repo-api.onrender.com',
+            host: 'github-pinned-repo-api.cyclic.app',
             port: 80,
             path: '/'
         };
         http_1.default.get(options, function (res) {
             res.on('data', function (logging) {
                 try {
-                    console.log("RENDER.COM RESPONSE: " + logging);
+                    console.log("CYCLIC RESPONSE: " + logging);
                 }
                 catch (e) {
                     if (typeof e === "string") {
