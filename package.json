@@ -6,6 +6,7 @@
     "scripts": {
         "start": "nodemon src/app.ts",
         "build": "tsc --project ./",
+        "dev": "npm install && npm run build",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
     "repository": {
