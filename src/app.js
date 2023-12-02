@@ -89,7 +89,7 @@ const aimer = (url) => __awaiter(void 0, void 0, void 0, function* () {
 function getPinnedRepos(username) {
     return __awaiter(this, void 0, void 0, function* () {
         const user = yield aimer(`https://github.com/${username}`);
-        const pinned = user(".pinned-item-list-item.public").toArray();
+        const pinned = user(".pinned-item-list-item").toArray();
         if (!pinned || pinned.length === 0)
             return [];
         const result = [];
