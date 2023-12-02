@@ -61,7 +61,7 @@ const aimer = async (url: string) => {
 
 async function getPinnedRepos(username: string) {
   const user = await aimer(`https://github.com/${username}`);
-  const pinned = user(".pinned-item-list-item.public").toArray();
+  const pinned = user(".pinned-item-list-item").toArray();
 
   if (!pinned || pinned.length === 0) return [];
   const result: any[] = [];
