@@ -32,17 +32,38 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
-const http_1 = __importDefault(require("http"));
+const https_1 = __importDefault(require("https"));
+const cors_1 = __importDefault(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const path_1 = __importDefault(require("path"));
 const cross_fetch_1 = __importDefault(require("cross-fetch"));
 const lru_cache_1 = __importDefault(require("lru-cache"));
 const cheerio = __importStar(require("cheerio"));
+const cron_1 = require("cron");
 const app = (0, express_1.default)();
 const port = 3000;
 const options = { max: 500, maxSize: 500 };
 const cache = new lru_cache_1.default(options);
-startKeepAlive();
+const url = 'https://github-pinned-repo-api.onrender.com';
+const cronJob = new cron_1.CronJob('*/14 * * * *', function () {
+    try {
+        https_1.default.get(url, (res) => {
+            if (res.statusCode === 200) {
+                console.log('Response Message: Server restarted');
+            }
+            else {
+                console.error(`Response Error: failed to restart server with status code: ${res.statusCode}`);
+            }
+        }).on('error', (err) => {
+            console.error(err.message);
+        });
+    }
+    catch (e) {
+        console.error(e);
+    }
+});
+cronJob.start();
+app.use((0, cors_1.default)());
 app.listen(process.env.PORT || port, () => {
     console.log(`Server is listening on port: ${process.env.PORT || port}`);
 });
@@ -77,8 +98,8 @@ app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             cache.set(strUsername, result);
         }
         res.set('Content-Type', 'application/json');
-        res.set("Set-Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
-        res.set("Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
+        res.set("Set-Cookie", 'nextPage=1; domain=localhost; maxAge=' + (1000 * 60 * 15));
+        res.set("Cookie", 'nextPage=1; domain=localhost; maxAge=' + (1000 * 60 * 15));
         res.send(JSON.stringify(result, null, 4));
     }
 }));
@@ -206,31 +227,4 @@ function getForks(user, item) {
     catch (error) {
         return undefined;
     }
-}
-/* Server cron job */
-function startKeepAlive() {
-    setInterval(function () {
-        var options = {
-            host: 'github-pinned-repo-api.onrender.com',
-            port: 80,
-            path: '/'
-        };
-        http_1.default.get(options, function (res) {
-            res.on('data', function (logging) {
-                try {
-                    console.log("RENDER.COM RESPONSE: " + logging);
-                }
-                catch (e) {
-                    if (typeof e === "string") {
-                        e.toUpperCase();
-                    }
-                    else if (e instanceof Error) {
-                        e.message;
-                    }
-                }
-            });
-        }).on('error', function (err) {
-            console.log("Error: " + err.message);
-        });
-    }, 14 * 60 * 1000);
 }

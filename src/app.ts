@@ -1,24 +1,44 @@
 import express from 'express';
-import http from 'http';
+import https from 'https';
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import fetch from 'cross-fetch';
 import LRU from 'lru-cache';
 import * as cheerio from 'cheerio';
+import { CronJob } from 'cron';
 
 const app = express();
 const port = 3000;
 const options = { max: 500, maxSize: 500 };
 const cache = new LRU(options);
+const url = 'https://github-pinned-repo-api.onrender.com';
 
-startKeepAlive();
+const cronJob = new CronJob('*/14 * * * *', function() {
+  try {
+    https.get(url, (res) => {
+      if (res.statusCode === 200) {
+        console.log('Response Message: Server restarted');
+      } else {
+        console.error(`Response Error: failed to restart server with status code: ${res.statusCode}`);
+      }
+    }).on('error', (err) => {
+      console.error(err.message);
+    });
+  } catch (e) {
+    console.error(e);
+  }
+});
+cronJob.start();
+
+app.use(cors());
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Server is listening on port: ${process.env.PORT || port}`);
 });
 
 app.use(express.static(path.join(__dirname, 'assets')));
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }));
 
 app.use((req, res, next) => {
   res.append('Access-Control-Allow-Origin', ['*']);
@@ -48,8 +68,8 @@ app.get('/', async(req, res) => {
       cache.set(strUsername, result);
     }
     res.set('Content-Type', 'application/json');
-    res.set("Set-Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
-    res.set("Cookie", 'nextPage=1; domain=localhost; maxAge=1000*60*15');
+    res.set("Set-Cookie", 'nextPage=1; domain=localhost; maxAge=' + (1000 * 60 * 15));
+    res.set("Cookie", 'nextPage=1; domain=localhost; maxAge=' + (1000 * 60 * 15));
     res.send(JSON.stringify(result, null, 4));
   }
 });
@@ -175,30 +195,4 @@ function getForks(user: cheerio.Root, item: cheerio.Element) {
   } catch (error) {
     return undefined;
   }
-}
-
-/* Server cron job */
-function startKeepAlive() {
-  setInterval(function() {
-    var options = {
-      host: 'github-pinned-repo-api.onrender.com',
-      port: 80,
-      path: '/'
-    };
-    http.get(options, function(res) {
-      res.on('data', function(logging) {
-        try {
-          console.log("RENDER.COM RESPONSE: " + logging);
-        } catch(e: unknown) {
-          if (typeof e === "string") {
-            e.toUpperCase()
-          } else if (e instanceof Error) {
-            e.message 
-          }
-        }
-      });
-    }).on('error', function(err) {
-      console.log("Error: " + err.message);
-    });
-  }, 14 * 60 * 1000);
 }
