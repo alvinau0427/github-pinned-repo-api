@@ -42,7 +42,7 @@ const app = (0, express_1.default)();
 const port = 3000;
 const options = { max: 500, maxSize: 500 };
 const cache = new lru_cache_1.default(options);
-// startKeepAlive();
+startKeepAlive();
 app.listen(process.env.PORT || port, () => {
     console.log(`Server is listening on port: ${process.env.PORT || port}`);
 });
@@ -207,21 +207,18 @@ function getForks(user, item) {
         return undefined;
     }
 }
-/* Cyclic.sh Server Keepalive */
-// setInterval(function() {
-//     http.get("https://github-pinned-repo-api.cyclic.app");
-// }, 300000); // every 5 minutes (300000)
+/* Server cron job */
 function startKeepAlive() {
     setInterval(function () {
         var options = {
-            host: 'github-pinned-repo-api.cyclic.app',
+            host: 'github-pinned-repo-api.onrender.com',
             port: 80,
             path: '/'
         };
         http_1.default.get(options, function (res) {
             res.on('data', function (logging) {
                 try {
-                    console.log("CYCLIC RESPONSE: " + logging);
+                    console.log("RENDER.COM RESPONSE: " + logging);
                 }
                 catch (e) {
                     if (typeof e === "string") {
@@ -235,5 +232,5 @@ function startKeepAlive() {
         }).on('error', function (err) {
             console.log("Error: " + err.message);
         });
-    }, 20 * 60 * 1000);
+    }, 14 * 60 * 1000);
 }

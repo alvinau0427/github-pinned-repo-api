@@ -11,7 +11,7 @@ const port = 3000;
 const options = { max: 500, maxSize: 500 };
 const cache = new LRU(options);
 
-// startKeepAlive();
+startKeepAlive();
 
 app.listen(process.env.PORT || port, () => {
   console.log(`Server is listening on port: ${process.env.PORT || port}`);
@@ -177,22 +177,18 @@ function getForks(user: cheerio.Root, item: cheerio.Element) {
   }
 }
 
-/* Cyclic.sh Server Keepalive */
-// setInterval(function() {
-//     http.get("https://github-pinned-repo-api.cyclic.app");
-// }, 300000); // every 5 minutes (300000)
-
+/* Server cron job */
 function startKeepAlive() {
   setInterval(function() {
     var options = {
-      host: 'github-pinned-repo-api.cyclic.app',
+      host: 'github-pinned-repo-api.onrender.com',
       port: 80,
       path: '/'
     };
     http.get(options, function(res) {
       res.on('data', function(logging) {
         try {
-          console.log("CYCLIC RESPONSE: " + logging);
+          console.log("RENDER.COM RESPONSE: " + logging);
         } catch(e: unknown) {
           if (typeof e === "string") {
             e.toUpperCase()
@@ -204,5 +200,5 @@ function startKeepAlive() {
     }).on('error', function(err) {
       console.log("Error: " + err.message);
     });
-  }, 20 * 60 * 1000);
+  }, 14 * 60 * 1000);
 }
