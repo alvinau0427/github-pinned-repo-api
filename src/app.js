@@ -63,20 +63,16 @@ const cronJob = new cron_1.CronJob('*/14 * * * *', function () {
     }
 });
 cronJob.start();
+// Use CORS middleware for handling CORS
 app.use((0, cors_1.default)({ origin: '*' }));
+// Set up express middleware
+app.use(express_1.default.static(path_1.default.join(__dirname, 'assets')));
+app.use(body_parser_1.default.urlencoded({ extended: true }));
+// Start server
 app.listen(process.env.PORT || port, () => {
     console.log(`Server is listening on port: ${process.env.PORT || port}`);
 });
-app.use(express_1.default.static(path_1.default.join(__dirname, 'assets')));
-app.use(body_parser_1.default.urlencoded({ extended: true }));
-app.use((req, res, next) => {
-    res.append('Access-Control-Allow-Origin', ['*']);
-    res.append('Access-Control-Request-Method', ['*']);
-    res.append('Access-Control-Allow-Credentials', ['true']);
-    res.append('Access-Control-Allow-Methods', 'OPTIONS, GET');
-    res.append('Access-Control-Allow-Headers', 'Content-Type');
-    next();
-});
+// Define main route with cache and data fetching
 app.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const username = req.query.username;
     if (!username) {
