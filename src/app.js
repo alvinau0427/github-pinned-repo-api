@@ -63,7 +63,7 @@ const cronJob = new cron_1.CronJob('*/14 * * * *', function () {
     }
 });
 cronJob.start();
-app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: '*' }));
 app.listen(process.env.PORT || port, () => {
     console.log(`Server is listening on port: ${process.env.PORT || port}`);
 });
