@@ -1,14 +1,19 @@
 # GitHub Pinned Repo API
-A lightweight API that retrieves **pinned repositories from a GitHub
-profile without requiring a Personal Access Token (PAT)**.
-
-This project provides a simple way for developers to fetch pinned
-repository information for use in **portfolios, dashboards, or personal
-websites** without dealing with GitHub authentication or rate‑limit
-complexities.
-
 ![Banner](github/img/img_banner.png)
-[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+
+[![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)](#) &nbsp;
+[![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=fff)](#) &nbsp;
+[![JavaScript](https://img.shields.io/badge/Javacript-F9AB00?logo=javascript&logoColor=white)](#) &nbsp;
+[![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=fff)](#) &nbsp;
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) &nbsp;
+
+> A lightweight API that retrieves **pinned repositories from a GitHub profile without requiring a Personal Access Token (PAT)**.
+>
+> This project provides a simple way for developers to fetch pinned repository information for use in **portfolios, dashboards, or personal websites** without dealing with GitHub authentication or rate‑limit complexities.
+
+## Import Notices
+> [!IMPORTANT]
+> The public Render instance at `https://github-pinned-repo-api.onrender.com` is best-effort and can be unreliable due to rate limits and traffic spikes.
 
 ## Overview
 GitHub allows users to pin repositories to their profile, but accessing
@@ -72,8 +77,8 @@ This API can be used for:
 ## Tech Stack
 -   Node.js
 -   Express.js
+-   TypeScript
 -   Web scraping / HTML parsing
--   Hosted on Cyclic
 
 ## License
 - github-pinned-repo-api is released under the [MIT License](https://opensource.org/licenses/MIT).
