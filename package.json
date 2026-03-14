@@ -1,45 +1,30 @@
 {
     "name": "github-pinned-repo-api",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Get GitHub pinned repository contents without using personal access token",
-    "main": "app.ts",
+    "main": "dist/app.js",
     "scripts": {
-        "start": "node src/app.js",
-        "build": "tsc --project ./",
-        "dev": "nodemon src/app.ts",
-        "deploy": "npm install && npm run build",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "start": "node dist/app.js",
+        "build": "tsc && copyfiles -u 1 src/view/**/* src/assets/**/* dist/",
+        "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
+        "deploy": "npm install && npm run build"
     },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/alvinau0427/github-pinned-repo-api.git"
-    },
-    "author": "Alvin Au",
-    "license": "MIT",
-    "bugs": {
-        "url": "https://github.com/alvinau0427/github-pinned-repo-api/issues"
-    },
-    "homepage": "https://github.com/alvinau0427/github-pinned-repo-api#readme",
     "devDependencies": {
         "@types/cheerio": "^0.22.31",
         "@types/cors": "^2.8.17",
         "@types/express": "^4.17.13",
-        "@types/lru-cache": "^5.1.1",
-        "@types/node": "^17.0.17",
-        "nodemon": "^2.0.15",
-        "ts-node": "^10.5.0",
-        "typescript": "^4.5.5"
+        "@types/node": "^20.0.0",
+        "nodemon": "^3.1.0",
+        "ts-node": "^10.9.0",
+        "typescript": "^5.0.0"
     },
     "dependencies": {
-        "body-parser": "^1.19.1",
-        "cheerio": "^1.0.0-rc.10",
+        "cheerio": "^1.0.0-rc.12",
+        "copyfiles": "^2.4.1",
         "cors": "^2.8.5",
         "cron": "^3.1.7",
-        "cross-fetch": "^3.1.5",
-        "express": "^4.17.2",
-        "http": "0.0.1-security",
-        "lru-cache": "^7.3.1",
-        "path": "^0.12.7",
-        "request": "^2.88.2"
+        "cross-fetch": "^4.0.0",
+        "express": "^4.18.2",
+        "lru-cache": "^10.0.0"
     }
 }
