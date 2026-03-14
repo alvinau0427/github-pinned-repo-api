@@ -8,39 +8,43 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) &nbsp;
 
 > A lightweight API that retrieves **pinned repositories from a GitHub profile without requiring a Personal Access Token (PAT)**.
->
-> This project provides a simple way for developers to fetch pinned repository information for use in **portfolios, dashboards, or personal websites** without dealing with GitHub authentication or rate‑limit complexities.
 
-## Import Notices
+## 📢 Important Notices
 > [!IMPORTANT]
-> The public Render instance at `https://github-pinned-repo-api.onrender.com` is best-effort and can be unreliable due to rate limits and traffic spikes.
+> The public Render instance at `https://github-pinned-repo-api.onrender.com` is best-effort. For production use, it is recommended to self-host this instance to ensure consistent availability.
 
-## Overview
-GitHub allows users to pin repositories to their profile, but accessing
-this information programmatically typically requires authenticated
-requests or complex scraping.
-
-**GitHub Pinned Repo API** provides a simple endpoint that returns
-pinned repository metadata in JSON format.
+## 🚀 Overview
+**GitHub Pinned Repo API** provides a simple endpoint that returns pinned repository metadata in JSON format. It solves the complexity of authenticated requests and provides a "plug-and-play" solution for showcasing your best work.
 
 The API is designed to be:
--   Simple to integrate
--   Lightweight
--   Token‑free
--   Suitable for personal portfolio projects
+- **Zero-Config**: No GitHub tokens or OAuth required.
+- **Performant**: Built-in caching and optimized request handling.
+- **Reliable**: Smart filtering to ensure only manually pinned repos are returned.
 
-## Features
--   Retrieve pinned repositories from any public GitHub profile
--   No GitHub Personal Access Token required
--   Simple REST API interface
--   JSON formatted response
--   Easy integration with frontend frameworks (React, Vue, etc.)
--   Lightweight backend service
+## ✨ Features
+### 🌟 Core Features
+- **Token‑free**: Fetch data from any public profile without hitting restrictive GitHub API limits.
+- **Simple REST Interface**: Clean JSON responses ready for React, Vue, or vanilla JS.
+- **Accurate Data Filtering**: Strictly returns Pinned Repositories. If a user has none, it returns an empty array `[]` instead of "Popular Repositories".
+- **Clean Output**: Automatically sanitizes data by stripping whitespace and newline characters from GitHub's HTML.
 
-## API Usage
+### ⚡ Performance & Reliability
+- **Built-in Caching**: Uses `lru-cache` to store results (5-minute TTL), significantly reducing server load.
+- **Request Collapsing (Locking)**: A smart mutex mechanism prevents redundant background updates when multiple requests hit the same profile simultaneously.
+- **SWR Strategy**: Implements *Stale-While-Revalidate*—serves cached data instantly while refreshing the content in the background for the next visitor.
+- **Robust Error Handling**: Proper JSON error responses for 404 (User Not Found) or 429 (Rate Limit) scenarios.
+
+## 🛠️ Tech Stack
+- **Runtime**: Node.js
+- **Framework**: Express.js (TypeScript)
+- **Scraping**: Cheerio (Optimized HTML parsing)
+- **Caching**: lru-cache
+- **Deployment**: Render
+
+## 📖 API Usage
 ### Endpoint
 ```
-GET /api/:username
+GET /?username=:username
 ```
 
 ### Example Request
@@ -66,19 +70,12 @@ https://github-pinned-repo-api.onrender.com/?username=alvinau0427
 ]
 ```
 
-## Use Cases
+## 🎯 Use Cases
 This API can be used for:
--   Developer portfolio websites
--   GitHub profile dashboards
--   Personal landing pages
--   Developer widgets
--   Static site integrations
-
-## Tech Stack
--   Node.js
--   Express.js
--   TypeScript
--   Web scraping / HTML parsing
+- Developer portfolio websites
+- GitHub profile dashboards
+- Dynamic "Projects" section on personal landing pages.
+- Static site generator (SSG) integrations.
 
 ## License
 - github-pinned-repo-api is released under the [MIT License](https://opensource.org/licenses/MIT).
