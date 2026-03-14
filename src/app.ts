@@ -4,14 +4,14 @@ import cors from 'cors';
 import bodyParser from 'body-parser';
 import path from 'path';
 import fetch from 'cross-fetch';
-import LRU from 'lru-cache';
 import * as cheerio from 'cheerio';
+import { LRUCache } from 'lru-cache';
 import { CronJob } from 'cron';
 
 const app = express();
 const port = 3000;
-const options = { max: 500, maxSize: 500 };
-const cache = new LRU(options);
+const options = { max: 500, ttl: 1000 * 60 * 5};
+const cache = new LRUCache(options);
 const url = 'https://github-pinned-repo-api.onrender.com';
 
 const cronJob = new CronJob('*/14 * * * *', function() {
