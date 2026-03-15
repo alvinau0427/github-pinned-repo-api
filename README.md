@@ -20,15 +20,15 @@ The project is fully written in **TypeScript**, ensuring type safety and robust 
 ## ✨ Features
 ### 🌟 Core Features
 - **Dual-Mode Fetching**: Automatically uses the **GitHub GraphQL API** for lightning-fast results. If no token is provided, it seamlessly falls back to **Optimized Web Scraping**.
+- **Advanced Metadata**: Supports fetching `topics`, `isArchived`, `isFork`, and `parentRepo` details (available in GraphQL mode).
 - **Full TypeScript Support**: End-to-end type safety with shared interfaces between frontend and backend.
-- **Accurate Data Filtering**: Strictly returns Pinned Repositories. If a user has none, it returns an empty array `[]` instead of "Popular Repositories".
-- **Standardized Output**: Returns consistent JSON structure regardless of the fetching method.
+- **Accurate Data Filtering**: Strictly returns Pinned Repositories. If a user has no pinned repos, it returns an empty array `[]`.
+- **Intelligent Schema**: Implements optional fields—advanced metadata is only returned when available, keeping the JSON output clean.
 
 ### ⚡ Performance & Reliability
 - **Built-in Caching**: Uses `lru-cache` to store results (5-minute TTL).
-- **Request Collapsing (Locking)**: A smart mutex mechanism prevents redundant background updates when multiple requests hit the same profile simultaneously.
+- **Request Collapsing (Locking)**: A smart mutex mechanism prevents redundant background updates for the same profile.
 - **SWR Strategy (Stale-While-Revalidate)**: Serves cached data instantly while refreshing content in the background.
-- **Hybrid Architecture**: Separated Client/Server structure for better maintainability.
 
 ## 🛠️ Tech Stack
 - **Language**: TypeScript
@@ -87,12 +87,34 @@ https://github-pinned-repo-api.onrender.com/?username=alvinau0427
         "image": "https://opengraph.githubassets.com/1/alvinau0427/github-pinned-repo-api",
         "website": "https://github-pinned-repo-api.onrender.com",
         "language": "JavaScript",
-        "languageColor": "#f1e05a",
+        "languageColor": "#3178c6",
         "stars": 1,
-        "forks": 0
+        "forks": 0,
+        "isArchived": false,
+        "isFork": true,
+        "parentRepo": {
+            "owner": "original-owner",
+            "repo": "original-repo",
+            "link": "https://github.com/original-owner/original-repo"
+        }
+        "topics": [
+            "api",
+            "dynamic",
+            "github-pinned-repos",
+            "github-profile",
+            "pinned-repos",
+            "serverless",
+            "awesome-portfolio",
+            "github-api"
+        ]
     }
 ]
 ```
+> [!NOTE]  
+> Advanced Metadata Behavior:
+> - `topics`, `isArchived`, and `isFork` are only available in GraphQL Mode.
+> - `parentRepo` only appears when `isFork` is `true`.
+> - If a user has no pinned repositories, the API returns an empty array `[]`.
 
 ## 🎯 Use Cases
 This API can be used for:

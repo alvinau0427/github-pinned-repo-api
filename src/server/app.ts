@@ -124,22 +124,34 @@ async function getPinnedReposByGraphQL(username: string): Promise<PinnedRepo[]> 
 
     const query = `
     query($username: String!) {
-      user(login: $username) {
-        pinnedItems(first: 6, types: REPOSITORY) {
-          nodes {
-            ... on Repository {
-              name
-              description
-              url
-              stargazerCount
-              forkCount
-              homepageUrl
-              owner { login }
-              primaryLanguage { name color }
+        user(login: $username) {
+            pinnedItems(first: 6, types: REPOSITORY) {
+                nodes {
+                    ... on Repository {
+                        name
+                        description
+                        url
+                        stargazerCount
+                        forkCount
+                        homepageUrl
+                        owner { login }
+                        primaryLanguage { name color }
+                        isArchived
+                        isFork
+                        parent {
+                            name
+                            url
+                            owner { login }
+                        }
+                        repositoryTopics(first: 10) {
+                            nodes {
+                                topic { name }
+                            }
+                        }
+                    }
+                }
             }
-          }
         }
-      }
     }`;
 
     const response = await fetch('https://api.github.com/graphql', {
@@ -174,6 +186,14 @@ async function getPinnedReposByGraphQL(username: string): Promise<PinnedRepo[]> 
         languageColor: repo.primaryLanguage?.color || undefined,
         stars: repo.stargazerCount || 0,
         forks: repo.forkCount || 0,
+        isArchived: repo.isArchived,
+        isFork: repo.isFork,
+        parentRepo: repo.isFork && repo.parent ? {
+            owner: repo.parent.owner.login,
+            repo: repo.parent.name,
+            link: repo.parent.url
+        } : undefined,
+        topics: repo.repositoryTopics.nodes.map((t: any) => t.topic.name),
     }));
 }
 
