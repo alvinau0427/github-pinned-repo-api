@@ -5,8 +5,13 @@ import bodyParser from 'body-parser';
 import path from 'path';
 import fetch from 'cross-fetch';
 import * as cheerio from 'cheerio';
+import * as dotenv from 'dotenv';
 import { LRUCache } from 'lru-cache';
 import { CronJob } from 'cron';
+
+dotenv.config();
+const GITHUB_TOKEN = process.env.GITHUB_TOKEN;
+console.log('Token Status:', GITHUB_TOKEN ? 'Success' : 'Read failure, make sure .env file is located in the outermost path.');
 
 const app = express();
 const port = 3000;
@@ -113,7 +118,64 @@ const aimer = async (url: string) => {
     return cheerio.load(html);
 }
 
-async function getPinnedRepos(username: string) {
+async function getPinnedReposByGraphQL(username: string) {
+    if (!GITHUB_TOKEN) throw new Error("No Token");
+
+    const query = `
+    query($username: String!) {
+      user(login: $username) {
+        pinnedItems(first: 6, types: REPOSITORY) {
+          nodes {
+            ... on Repository {
+              name
+              description
+              url
+              stargazerCount
+              forkCount
+              homepageUrl
+              owner { login }
+              primaryLanguage { name color }
+            }
+          }
+        }
+      }
+    }`;
+
+    const response = await fetch('https://api.github.com/graphql', {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${GITHUB_TOKEN}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ query, variables: { username } }),
+    });
+
+    const result: any = await response.json();
+
+    if (result.errors) {
+        if (result.errors.some((e: any) => e.type === 'NOT_FOUND')) {
+            const error = new Error("User Not Found");
+            (error as any).status = 404;
+            throw error;
+        }
+        throw new Error("GraphQL Internal Error");
+    }
+
+    return result.data.user.pinnedItems.nodes.map((repo: any) => ({
+        owner: repo.owner.login,
+        repo: repo.name,
+        link: repo.url,
+        description: repo.description,
+        image: `https://opengraph.githubassets.com/1/${repo.owner.login}/${repo.name}`,
+        website: repo.homepageUrl || undefined,
+        language: repo.primaryLanguage?.name || undefined,
+        languageColor: repo.primaryLanguage?.color || undefined,
+        stars: repo.stargazerCount,
+        forks: repo.forkCount,
+    }));
+}
+
+async function getPinnedReposByScraping(username: string) {
     try {
         const user = await aimer(`https://github.com/${username}`);
         
@@ -153,6 +215,20 @@ async function getPinnedRepos(username: string) {
         console.error(`Failed to fetch pinned repos for ${username}:`, error);
         throw error;
     }
+}
+
+async function getPinnedRepos(username: string) {
+    if (process.env.GITHUB_TOKEN) {
+        try {
+            console.log(`[GraphQL] Trying GraphQL for ${username}...`);
+            return await getPinnedReposByGraphQL(username); 
+        } catch (error: any) {
+            if (error.status === 404) throw error;
+            console.warn(`[Fallback] GraphQL failed, using Scraper instead.`);
+        }
+    }
+    console.log(`[Scraper] Fetching for ${username}...`);
+    return await getPinnedReposByScraping(username);
 }
 
 function getOwner(user: cheerio.Root, item: cheerio.Element) {

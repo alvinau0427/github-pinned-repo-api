@@ -1,6 +1,6 @@
 {
     "name": "github-pinned-repo-api",
-    "version": "2.1.0",
+    "version": "2.2.0",
     "description": "Get GitHub pinned repository contents without using personal access token",
     "main": "dist/app.js",
     "scripts": {
@@ -24,6 +24,7 @@
         "cors": "^2.8.5",
         "cron": "^3.1.7",
         "cross-fetch": "^4.0.0",
+        "dotenv": "^17.3.1",
         "express": "^4.18.2",
         "lru-cache": "^10.0.0"
     }
