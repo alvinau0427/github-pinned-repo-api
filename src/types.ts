@@ -9,4 +9,12 @@ export interface PinnedRepo {
     languageColor?: string;
     stars: number;
     forks: number;
+    topics?: string[];
+    isArchived?: boolean;
+    isFork?: boolean;
+    parentRepo?: {
+        owner: string;
+        repo: string;
+        link: string;
+    };
 }
