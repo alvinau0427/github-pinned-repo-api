@@ -3,7 +3,9 @@
         "target": "ES2020",
         "module": "CommonJS",
         "lib": [
-            "ES2020"
+            "ES2020",
+            "DOM",
+            "DOM.Iterable"
         ],
         "rootDir": "./src",
         "outDir": "./dist",

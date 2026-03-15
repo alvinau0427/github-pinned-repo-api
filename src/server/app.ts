@@ -6,6 +6,7 @@ import path from 'path';
 import fetch from 'cross-fetch';
 import * as cheerio from 'cheerio';
 import * as dotenv from 'dotenv';
+import { PinnedRepo } from '../types';
 import { LRUCache } from 'lru-cache';
 import { CronJob } from 'cron';
 
@@ -18,7 +19,7 @@ const port = 3000;
 const options = { max: 500, ttl: 1000 * 60 * 5 };
 const cache = new LRUCache(options);
 const updatingUsers = new Set<string>();
-const url = 'https://github-pinned-repo-api.onrender.com';
+const url = process.env.APP_URL || 'https://github-pinned-repo-api.onrender.com';
 
 const cronJob = new CronJob('*/14 * * * *', function () {
     try {
@@ -41,7 +42,8 @@ cronJob.start();
 app.use(cors({ origin: '*' }));
 
 // Set up express middleware
-app.use(express.static(path.join(__dirname, 'assets')));
+app.use('/assets', express.static(path.resolve(__dirname, '../assets')));
+app.use('/client', express.static(path.resolve(__dirname, '../client')));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Start server
@@ -55,12 +57,11 @@ app.get('/', async (req, res) => {
 
     if (!username) {
         res.set('Content-Type', 'text/html');
-        return res.sendFile(__dirname + "/view/index.html");
+        return res.sendFile(path.resolve(__dirname, '../view/index.html'));
     }
 
     const cachedResult = cache.get(username);
     res.set('Content-Type', 'application/json');
-    res.set("Set-Cookie", `nextPage=1; domain=localhost; Path=/; Max-Age=${60 * 15}`);
 
     if (cachedResult) {
         // Send the old cached data back to the user to ensure speed
@@ -111,14 +112,14 @@ const aimer = async (url: string) => {
     const res = await fetch(url);
     if (!res.ok) {
         const error = new Error(`GitHub error: ${res.statusText}`);
-        (error as any).status = res.status; 
+        (error as any).status = res.status;
         throw error;
     }
     const html = await res.text();
     return cheerio.load(html);
 }
 
-async function getPinnedReposByGraphQL(username: string) {
+async function getPinnedReposByGraphQL(username: string): Promise<PinnedRepo[]> {
     if (!GITHUB_TOKEN) throw new Error("No Token");
 
     const query = `
@@ -151,49 +152,49 @@ async function getPinnedReposByGraphQL(username: string) {
     });
 
     const result: any = await response.json();
-
     if (result.errors) {
-        if (result.errors.some((e: any) => e.type === 'NOT_FOUND')) {
-            const error = new Error("User Not Found");
+        if (result.errors.some((e: any) => e.type === 'NOT_FOUND' || e.path?.includes('user'))) {
+            const error = new Error(`GitHub user ${username} not found.`);
             (error as any).status = 404;
             throw error;
         }
+        console.error('[GraphQL Error Detail]:', JSON.stringify(result.errors, null, 2));
         throw new Error("GraphQL Internal Error");
     }
 
-    return result.data.user.pinnedItems.nodes.map((repo: any) => ({
-        owner: repo.owner.login,
+    const nodes = result.data?.user?.pinnedItems?.nodes || [];
+    return nodes.map((repo: any) => ({
+        owner: repo.owner?.login || username,
         repo: repo.name,
         link: repo.url,
-        description: repo.description,
-        image: `https://opengraph.githubassets.com/1/${repo.owner.login}/${repo.name}`,
+        description: repo.description || "",
+        image: `https://opengraph.githubassets.com/1/${repo.owner?.login || username}/${repo.name}`,
         website: repo.homepageUrl || undefined,
         language: repo.primaryLanguage?.name || undefined,
         languageColor: repo.primaryLanguage?.color || undefined,
-        stars: repo.stargazerCount,
-        forks: repo.forkCount,
+        stars: repo.stargazerCount || 0,
+        forks: repo.forkCount || 0,
     }));
 }
 
-async function getPinnedReposByScraping(username: string) {
+async function getPinnedReposByScraping(username: string): Promise<PinnedRepo[]> {
     try {
         const user = await aimer(`https://github.com/${username}`);
-        
-        // Check if the title contains 'Pinned'
+
         const isPinnedExist = user('h2:contains("Pinned")').length > 0;
         if (!isPinnedExist) {
-            console.log(`[Info] User ${username} has no pinned repos, skipping popular repos.`);
+            console.log(`[Info] User ${username} has no pinned repos.`);
             return [];
         }
 
         const pinned = user(".pinned-item-list-item").toArray();
         if (!pinned || pinned.length === 0) return [];
 
-        const result = await Promise.all(pinned.map(async (item) => {
+        const result: PinnedRepo[] = await Promise.all(pinned.map(async (item): Promise<PinnedRepo> => {
             const owner = getOwner(user, item) || username;
-            const repo = getRepo(user, item);
+            const repo = getRepo(user, item) || "";
             const link = `https://github.com/${owner}/${repo}`;
-            const description = getDescription(user, item);
+            const description = getDescription(user, item) || "";
             const image = `https://opengraph.githubassets.com/1/${owner}/${repo}`;
             const website = await getWebsite(link);
 
@@ -217,11 +218,11 @@ async function getPinnedReposByScraping(username: string) {
     }
 }
 
-async function getPinnedRepos(username: string) {
+async function getPinnedRepos(username: string): Promise<PinnedRepo[]> {
     if (process.env.GITHUB_TOKEN) {
         try {
             console.log(`[GraphQL] Trying GraphQL for ${username}...`);
-            return await getPinnedReposByGraphQL(username); 
+            return await getPinnedReposByGraphQL(username);
         } catch (error: any) {
             if (error.status === 404) throw error;
             console.warn(`[Fallback] GraphQL failed, using Scraper instead.`);
@@ -264,14 +265,17 @@ function getHref(user: cheerio.Root, item: cheerio.Element) {
     }
 }
 
-function getWebsite(repo: string) {
+function getWebsite(repo: string): Promise<string | undefined> {
     return aimer(repo).then((target) => {
         try {
             const site = target(".BorderGrid-cell");
-            if (!site || site.length === 0) return [];
-            let href;
+            if (!site || site.length === 0) return undefined;
+
+            let href: string | undefined;
             site.each((index, item) => {
-                if (index == 0) href = getHref(target, item);
+                if (index === 0) {
+                    href = getHref(target, item);
+                }
             });
             return href;
         } catch (error) {
