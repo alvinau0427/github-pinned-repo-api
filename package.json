@@ -1,12 +1,12 @@
 {
     "name": "github-pinned-repo-api",
-    "version": "2.2.0",
+    "version": "2.3.0",
     "description": "Get GitHub pinned repository contents without using personal access token",
     "main": "dist/app.js",
     "scripts": {
-        "start": "node dist/app.js",
         "build": "tsc && copyfiles -u 1 src/view/**/* src/assets/**/* dist/",
-        "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/app.ts",
+        "start": "node dist/server/app.js",
+        "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/app.ts",
         "deploy": "npm install && npm run build"
     },
     "devDependencies": {
