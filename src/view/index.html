@@ -1,28 +1,22 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<html lang="en">
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta name="language" content="English" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="format-detection" content="telephone=no, date=no, address=no, email=no">
     <meta name="description" content="Genetates API for GitHub pinned repos from personal portfolio" />
     <meta name="title" content="GitHub Pinned Repos API Generator" />
-    <meta property="og:description" content="Genetates API for GitHub pinned repos from personal portfolio" />
     <meta property="og:title" content="GitHub Pinned Repos API Generator" />
+    <meta property="og:description" content="Genetates API for GitHub pinned repos from personal portfolio" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://github-pinned-repo-api.cyclic.app/" />
+    <meta property="og:url" content="https://github-pinned-repo-api.onrender.com/" />
     <meta property="og:image"
         content="https://github.com/alvinau0427/github-pinned-repo-api/assets/images/touch-icons/apple-touch-icon-1024x1024.png" />
-    <meta property="og:image:secure_url"
-        content="https://github.com/alvinau0427/github-pinned-repo-api/assets/images/touch-icons/apple-touch-icon-1024x1024.png" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="1024" />
-    <meta property="og:image:height" content="1024" />
     <meta property="og:image:alt" content="Generates API for GitHub pinned repos from personal portfolio" />
     <meta property="og:site_name" content="github-pinned-repo-api" />
-    
+
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -32,22 +26,15 @@
     <link rel="apple-touch-icon" sizes="120x120" href="/assets/images/touch-icons/apple-touch-icon-120x120.png" />
     <link rel="apple-touch-icon" sizes="114x114" href="/assets/images/touch-icons/apple-touch-icon-114x114.png" />
     <link rel="apple-touch-icon" sizes="76x76" href="/assets/images/touch-icons/apple-touch-icon-76x76.png" />
-    <link rel="apple-touch-icon" sizes="72x72" href="/assets/images/touch-icons/apple-touch-icon-72x72.png" />
-    <link rel="apple-touch-icon" sizes="57x57" href="/assets/images/touch-icons/apple-touch-icon-57x57.png" />
     <link rel="apple-touch-icon" href="/assets/images/touch-icons/apple-touch-icon-57x57.png" />
-
     <link rel="shortcut icon" href="/assets/images/favicon.ico" type="image/x-icon" />
-    <link rel="preload" href="/assets/fonts/Zpix.woff" as="font" type="font/woff" crossorigin>
 
     <title>GitHub Pinned Repos API Generator</title>
-    <link rel="canonical" href="https://alvinau.dev/github-pinned-repo-api/" />
-
-    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script type="text/javascript" src="/client/index.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css">
 </head>
 
-<body>
+<body class="bg-[#fcfcf9] min-h-screen flex flex-col items-center justify-center p-6 font-sans antialiased">
     <a href="https://github.com/alvinau0427/github-pinned-repo-api" class="github-corner"
         aria-label="View source on GitHub">
         <svg width="80" height="80" viewBox="0 0 250 250"
@@ -62,27 +49,64 @@
         </svg>
     </a>
 
-    <div class="cntr">
-        <div class="cntr-innr">
-            <form id="input_form">
-                <label class="search" for="input_search">
-                    <input id="input_search" name="username" type="text" autocomplete="off" required />
-                </label>
-            </form>
-            <p>Enter GitHub username → Redirect to API JSON</p>
+    <div class="w-full max-w-3xl mb-12 text-center">
+        <div class="w-20 h-20 mx-auto mb-6">
+            <img src="assets/images/logo.png" alt="logo" class="w-full h-full object-contain">
+        </div>
+
+        <h1 class="text-[40px] font-serif font-light text-[#1f1e1d] tracking-tight">
+            GitHub Pinned Repository <span class="relative inline-block pb-1">API
+                <svg class="absolute w-[130%] h-[15px] -bottom-1 -left-[15%] text-[#D97757]" viewBox="0 0 140 24">
+                    <path d="M6 16 C 40 22, 100 22, 134 14" stroke="currentColor" stroke-width="3"
+                        stroke-linecap="round" fill="none" class="underline-path" />
+                </svg>
+            </span>
+        </h1>
+    </div>
+
+    <div class="w-full max-w-[720px]">
+        <form id="input_form"
+            class="bg-white border border-[#E5E5E5] rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.04)] transition-all duration-300 focus-within:border-[#D4D4D4] focus-within:shadow-[0_8px_30px_rgba(0,0,0,0.06)]">
+            <div class="p-4 flex flex-col gap-2">
+                <textarea id="input_search" placeholder="Who's pinned repos are you looking for?"
+                    class="w-full bg-transparent border-none focus:ring-0 text-[18px] text-[#1f1e1d] placeholder-[#9CA3AF] resize-none overflow-hidden min-h-[44px]"
+                    name="username" required autocomplete="off"></textarea>
+
+                <div class="flex items-center justify-between mt-2">
+                    <div class="flex items-center gap-1.5 text-[#73726C]">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10" />
+                            <path d="M12 16v-4" />
+                            <path d="M12 8h.01" />
+                        </svg>
+                        <span class="text-sm italic">Press Enter to search</span>
+                    </div>
+
+                    <button id="sendBtn" type="submit" disabled
+                        class="w-8 h-8 flex items-center justify-center rounded-xl bg-[#D46B4F] text-white transition-opacity duration-200 opacity-20 cursor-not-allowed">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 19V5M5 12l7-7 7 7" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </form>
+        <p class="text-center text-[11px] text-[#73726C] mt-8 opacity-70">
+            Copyright &copy; <span id="current-year"></span> &mdash; Alvin Au, All rights reserved.
+        </p>
+    </div>
+
+    <div id="overlay"
+        class="fixed inset-0 bg-black/50 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center z-50">
+        <div class="bg-white p-8 rounded-2xl shadow-xl flex flex-col items-center">
+            <div class="animate-spin rounded-full h-12 w-12 border-4 border-[#D46B4F] border-t-transparent mb-4"></div>
+            <p class="text-[#1f1e1d] font-serif text-xl">Redirecting...</p>
         </div>
     </div>
-    
-    <footer>
-        <p>Copyright &copy; <span id="current-year"></span> &mdash; Alvin Au, All rights reserved.</p>
-    </footer>
 
-    <div id="overlay" class="overlay"></div>
-    <div id="spinner" class="spinner">
-        <div id="loader" class="loader"></div>
-        <p>Redirecting to API...</p>
-    </div>
-
+    <script src="/client/index.js"></script>
     <script>document.getElementById('current-year').textContent = new Date().getFullYear();</script>
 </body>
 
