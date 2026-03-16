@@ -3,6 +3,7 @@
 
 [![HTML](https://img.shields.io/badge/HTML-%23E34F26.svg?logo=html5&logoColor=white)](#) &nbsp;
 [![CSS](https://img.shields.io/badge/CSS-639?logo=css&logoColor=white)](#) &nbsp;
+[![Tailwind](https://img.shields.io/badge/Tailwind-%2338B2AC.svg?logo=tailwind-css&logoColor=white)](#) &nbsp;
 [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](#) &nbsp;
 [![Swagger](https://img.shields.io/badge/-Swagger-6BA539?logo=swagger&logoColor=white)](#) &nbsp;
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE) &nbsp;
@@ -24,15 +25,21 @@
 - **Advanced Metadata**: Supports fetching `topics`, `isArchived`, `isFork`, and `parentRepo` details.
 - **Full TypeScript Support**: End-to-end type safety with shared interfaces between frontend and backend.
 
+### 🎨 UI/UX Enhancements
+- **Modern Minimalist UI**: Completely refactored from legacy styles to a sleek, modern interface using **Tailwind CSS**.
+- **Performance Optimized**: Removed redundant heavy assets (e.g., legacy pixel fonts) to ensure faster load times.
+- **Bfcache Handling**: Implemented `pageshow` listeners to resolve the "loading mask persistence" issue when navigating back in browsers.
+- **Smart Components**: Auto-expanding search input with real-time button state transitions and smooth Tailwind animations.
+
 ### ⚡ Performance & Reliability
 - **Built-in Caching**: Uses `lru-cache` with a 5-minute TTL.
-- **SWR Strategy (Stale-While-Revalidate)**: Serves cached data instantly while refreshing content in the background to ensure Zero-Wait response times.
+- **SWR Strategy (Stale-While-Revalidate)**: Serves cached data instantly while refreshing content in the background.
 - **Self-Ping Mechanism**: Integrated cron job to prevent Render instances from sleeping.
 
 ## 🛠️ Tech Stack
 - **Language**: TypeScript
 - **Backend**: Node.js / Express.js
-- **Frontend**: Vanilla TS (compiled to JS)
+- **Frontend Styling**: **Tailwind CSS** (Utility-first)
 - **Data Fetching**: GitHub GraphQL API & Cheerio
 - **Caching**: lru-cache
 - **Build Tool**: TSC (TypeScript Compiler) & Copyfiles
@@ -44,12 +51,12 @@ You can explore the interactive API documentation and test the endpoints directl
 
 ## 🛠️ Usage
 ### Endpoint
-```text
+```
 GET /api/:username
 ```
 
 ### Example Request
-```bash
+```
 https://github-pinned-repo-api.onrender.com/api/alvinau0427
 ```
 
@@ -95,7 +102,7 @@ https://github-pinned-repo-api.onrender.com/api/alvinau0427
 
 ## 🛠️ Usage
 ### Installation
-```bash
+```
 npm install
 ```
 
@@ -108,7 +115,7 @@ ALLOWED_ORIGINS=http://localhost:3000,[https://your-domain.com](https://your-dom
 ```
 
 ### Build & Start
-```bash
+```
 # Compile TypeScript and copy static assets
 npm run build
 
