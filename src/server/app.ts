@@ -7,6 +7,7 @@ import fetch from 'cross-fetch';
 import * as cheerio from 'cheerio';
 import * as dotenv from 'dotenv';
 import { PinnedRepo } from '../types';
+import { setupSwagger } from './swagger';
 import { LRUCache } from 'lru-cache';
 import { CronJob } from 'cron';
 
@@ -17,10 +18,12 @@ console.log('Token Status:', GITHUB_TOKEN ? 'Success' : 'Read failure, make sure
 const app = express();
 const port = 3000;
 
+// --- Cache Configuration ---
 const options = { max: 500, ttl: 1000 * 60 * 5 };
 const cache = new LRUCache<string, PinnedRepo[]>(options);
 const updatingUsers = new Set<string>();
 
+// --- Cron Job: Keep Server Alive ---
 const url = process.env.APP_URL || 'https://github-pinned-repo-api.onrender.com';
 const cronJob = new CronJob('*/14 * * * *', function () {
     try {
@@ -37,6 +40,7 @@ const cronJob = new CronJob('*/14 * * * *', function () {
 });
 cronJob.start();
 
+// --- Middlewares ---
 const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : '*';
 app.use(cors({
     origin: allowedOrigins,
@@ -47,12 +51,40 @@ app.use(cors({
 app.use('/assets', express.static(path.resolve(__dirname, '../assets')));
 app.use('/client', express.static(path.resolve(__dirname, '../client')));
 app.use(bodyParser.urlencoded({ extended: true }));
+setupSwagger(app);
+
+// --- Routes ---
 
 app.get('/', (req, res) => {
     res.set('Content-Type', 'text/html');
     return res.sendFile(path.resolve(__dirname, '../view/index.html'));
 });
 
+/**
+ * @openapi
+ * /api/{username}:
+ * get:
+ * summary: Get GitHub pinned repositories
+ * description: Fetches pinned repositories for a specific GitHub user.
+ * parameters:
+ * - in: path
+ * name: username
+ * required: true
+ * description: The GitHub username to fetch.
+ * schema:
+ * type: string
+ * responses:
+ * 200:
+ * description: A JSON array of pinned repositories.
+ * content:
+ * application/json:
+ * schema:
+ * type: array
+ * items:
+ * $ref: '#/components/schemas/PinnedRepo'
+ * 404:
+ * description: User not found.
+ */
 app.get('/api/:username', async (req, res) => {
     const { username } = req.params;
 
@@ -96,6 +128,11 @@ app.get('/api/:username', async (req, res) => {
     }
 });
 
+/**
+ * Core function to decide between GraphQL and Scraping.
+ * @param username GitHub username
+ * @returns Promise resolving to an array of PinnedRepo
+ */
 async function getPinnedRepos(username: string): Promise<PinnedRepo[]> {
     if (GITHUB_TOKEN) {
         try {
@@ -110,6 +147,9 @@ async function getPinnedRepos(username: string): Promise<PinnedRepo[]> {
     return await getPinnedReposByScraping(username);
 }
 
+/**
+ * Fetches data using GitHub GraphQL API.
+ */
 async function getPinnedReposByGraphQL(username: string): Promise<PinnedRepo[]> {
     const query = `
     query($username: String!) {
@@ -186,6 +226,9 @@ async function getPinnedReposByGraphQL(username: string): Promise<PinnedRepo[]> 
     }));
 }
 
+/**
+ * Fallback method to fetch data using Cheerio scraping.
+ */
 async function getPinnedReposByScraping(username: string): Promise<PinnedRepo[]> {
     try {
         const user = await aimer(`https://github.com/${username}`);
@@ -228,6 +271,9 @@ async function getPinnedReposByScraping(username: string): Promise<PinnedRepo[]>
     }
 }
 
+/**
+ * Loads a URL and returns a Cheerio instance.
+ */
 const aimer = async (url: string) => {
     const res = await fetch(url);
     if (!res.ok) {
@@ -239,6 +285,7 @@ const aimer = async (url: string) => {
     return cheerio.load(html);
 }
 
+// --- Helper Functions for Scraping ---
 function getOwner(user: cheerio.Root, item: cheerio.Element) {
     return user(item).find(".owner").text().trim() || undefined;
 }
@@ -251,6 +298,9 @@ function getDescription(user: cheerio.Root, item: cheerio.Element) {
     return user(item).find(".pinned-item-desc").text().trim() || undefined;
 }
 
+/**
+ * Fetches the project website URL by visiting the repository page.
+ */
 async function getWebsite(repoUrl: string): Promise<string | undefined> {
     try {
         const target = await aimer(repoUrl);

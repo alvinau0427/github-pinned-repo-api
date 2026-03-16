@@ -10,7 +10,9 @@
         "rootDir": "./src",
         "outDir": "./dist",
         "strict": true,
+        "resolveJsonModule": true,
         "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
         "forceConsistentCasingInFileNames": true,
         "skipLibCheck": true,
         "typeRoots": [
