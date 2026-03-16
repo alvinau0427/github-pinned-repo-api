@@ -50,7 +50,7 @@ GET /api/:username
 
 ### Example Request
 ```bash
-curl [https://github-pinned-repo-api.onrender.com/api/alvinau0427](https://github-pinned-repo-api.onrender.com/api/alvinau0427)
+https://github-pinned-repo-api.onrender.com/api/alvinau0427
 ```
 
 ### Example Response
