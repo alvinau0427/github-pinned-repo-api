@@ -27,14 +27,36 @@ function inputOnBlur(target: HTMLInputElement): void {
     }
 }
 
-function formOnSubmit(): void {
-    document.getElementById('spinner')?.classList.add('show');
-    document.getElementById('overlay')?.classList.add('show');
+function handleRedirect(event: Event): void {
+    event.preventDefault();
 
-    const nextPageCookie = getCookie("nextPage");
-    if (nextPageCookie) {
-        document.getElementById('spinner')?.classList.add('show');
-        document.getElementById('overlay')?.classList.add('remove');
-        eraseCookie('nextPage');
+    const input = document.getElementById('input_search') as HTMLInputElement;
+    const spinner = document.getElementById('spinner');
+    const overlay = document.getElementById('overlay');
+
+    const username = input.value.trim();
+
+    if (username) {
+        spinner?.classList.add('show');
+        overlay?.classList.add('show');
+
+        const nextPageCookie = getCookie("nextPage");
+        if (nextPageCookie) {
+            eraseCookie('nextPage');
+        }
+
+        window.location.href = `/api/${username}`;
     }
 }
+
+window.onload = () => {
+    const form = document.getElementById('input_form');
+    const input = document.getElementById('input_search') as HTMLInputElement;
+
+    form?.addEventListener('submit', handleRedirect);
+
+    if (input) {
+        input.addEventListener('focus', () => inputOnFocus(input));
+        input.addEventListener('blur', () => inputOnBlur(input));
+    }
+};
