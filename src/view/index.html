@@ -64,26 +64,26 @@
 
     <div class="cntr">
         <div class="cntr-innr">
-            <form id="input_form" onsubmit="formOnSubmit()" action="/">
+            <form id="input_form">
                 <label class="search" for="input_search">
-                    <input id="input_search" name="username" type="text" autocomplete="off" onfocus="inputOnFocus(this)"
-                        onblur="inputOnBlur(this)" required />
+                    <input id="input_search" name="username" type="text" autocomplete="off" required />
                 </label>
             </form>
-            <p>Enter GitHub username → Get pinned repos API</p>
+            <p>Enter GitHub username → Redirect to API JSON</p>
         </div>
     </div>
+    
     <footer>
-        <p>Copyright &copy;
-            <script>document.write(new Date().getFullYear())</script> &mdash; Alvin Au, All rights reserved.
-        </p>
+        <p>Copyright &copy; <span id="current-year"></span> &mdash; Alvin Au, All rights reserved.</p>
     </footer>
 
     <div id="overlay" class="overlay"></div>
     <div id="spinner" class="spinner">
         <div id="loader" class="loader"></div>
-        <p>Loading API, please be patient.</p>
+        <p>Redirecting to API...</p>
     </div>
+
+    <script>document.getElementById('current-year').textContent = new Date().getFullYear();</script>
 </body>
 
 </html>

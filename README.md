@@ -70,10 +70,10 @@ To enable the high-speed GraphQL mode, add your GitHub token to your environment
 
 ### Example Request
 ```
-GET /?username=alvinau0427
+GET /api/:username
 ```
 ```
-https://github-pinned-repo-api.onrender.com/?username=alvinau0427
+https://github-pinned-repo-api.onrender.com/api/alvinau0427
 ```
 
 ### Example Response
