@@ -8,7 +8,7 @@
         "build:css": "tailwindcss -i ./src/assets/css/tailwind.input.css -o ./dist/assets/css/tailwind.css --minify",
         "start": "node dist/server/app.js",
         "dev": "nodemon --watch src --ext ts,html,css,json --exec \"npm run build && node dist/server/app.js\"",
-        "test": "tsx --test tests/**/*.test.ts",
+        "test": "tsx --test tests/api.test.ts tests/scraper.test.ts",
         "deploy": "npm install && npm run build"
     },
     "devDependencies": {
