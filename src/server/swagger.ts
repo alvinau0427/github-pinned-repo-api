@@ -44,7 +44,10 @@ const options: swaggerJsdoc.Options = {
                                 }
                             }
                         },
-                        '404': { description: 'User not found' }
+                        '404': { description: 'User not found' },
+                        '422': { description: 'Invalid GitHub username' },
+                        '429': { description: 'Rate limit exceeded' },
+                        '500': { description: 'Upstream / internal error' }
                     }
                 }
             }

@@ -1,24 +1,36 @@
 {
     "name": "github-pinned-repo-api",
-    "version": "2.3.3",
+    "version": "3.0.0",
     "description": "Get GitHub pinned repository contents without using personal access token",
-    "main": "dist/app.js",
+    "main": "dist/server/app.js",
     "scripts": {
-        "build": "tsc && copyfiles -u 1 src/view/**/* src/assets/**/* dist/",
+        "build": "tsc && npm run build:css && copyfiles -u 1 src/view/**/* src/assets/**/* src/manifest.json dist/",
+        "build:css": "tailwindcss -i ./src/assets/css/tailwind.input.css -o ./dist/assets/css/tailwind.css --minify",
         "start": "node dist/server/app.js",
-        "dev": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/server/app.ts",
+        "dev": "nodemon --watch src --ext ts,html,css,json --exec \"npm run build && node dist/server/app.js\"",
+        "test": "tsx --test tests/api.test.ts tests/scraper.test.ts",
         "deploy": "npm install && npm run build"
     },
     "devDependencies": {
-        "@types/cheerio": "^0.22.31",
         "@types/cors": "^2.8.17",
         "@types/express": "^4.17.13",
         "@types/node": "^20.0.0",
+        "@types/supertest": "^6.0.2",
         "@types/swagger-jsdoc": "^6.0.4",
         "@types/swagger-ui-express": "^4.1.8",
+        "domhandler": "^5.0.3",
         "nodemon": "^3.1.0",
+        "supertest": "^7.0.0",
+        "tailwindcss": "^3.4.17",
         "ts-node": "^10.9.0",
+        "tsx": "^4.19.0",
         "typescript": "^5.0.0"
+    },
+    "overrides": {
+        "qs": "^6.17.1",
+        "nodemon": {
+            "minimatch": "^11.0.9"
+        }
     },
     "dependencies": {
         "cheerio": "^1.0.0-rc.12",
@@ -28,6 +40,7 @@
         "cross-fetch": "^4.0.0",
         "dotenv": "^17.3.1",
         "express": "^4.18.2",
+        "express-rate-limit": "^7.4.0",
         "lru-cache": "^10.0.0",
         "swagger-jsdoc": "^6.2.8",
         "swagger-ui-express": "^5.0.1"
